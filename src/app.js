@@ -6,7 +6,7 @@ const helmet = require("helmet");
 const xss = require("xss-clean");
 const compression = require("compression");
 const bodyParser = require("body-parser");
-const routerNavigation = require("./routes");
+const routerNavigation = require("./routes"); // variabel rute
 
 const app = express();
 const port = 3001;
@@ -22,7 +22,10 @@ app.use(bodyParser.json());
 // app.get("/greetings", (request, response) => {
 //   response.status(200).send("Hello World!");
 // });
-app.use("/api", routerNavigation);
+
+// path
+
+app.use("/api", routerNavigation); // rute yang dilalui pada awal
 
 app.use("/*", (req, res) => {
   res.status(404).send("Path not found!");
