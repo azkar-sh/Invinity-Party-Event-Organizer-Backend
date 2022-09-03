@@ -1,11 +1,10 @@
-const supabase = require("../config/supabase"); // variabel database
+const supabase = require("../config/supabase");
 
 module.exports = {
-  // showGreetings: () => new Promise((resolve, reject) => {}),
-  getAllProduct: () =>
+  getAllEvent: () =>
     new Promise((resolve, reject) => {
       supabase
-        .from("product")
+        .from("event")
         .select("*")
         .then((result) => {
           if (!result.error) {
@@ -15,12 +14,12 @@ module.exports = {
           }
         });
     }),
-  getProductById: (id) =>
+  getEventById: (id) =>
     new Promise((resolve, reject) => {
       supabase
-        .from("product")
+        .from("event")
         .select("*")
-        .eq("id", id)
+        .eq("eventId", id)
         .then((result) => {
           if (!result.error) {
             resolve(result);
@@ -29,10 +28,10 @@ module.exports = {
           }
         });
     }),
-  createProduct: (data) =>
+  createEvent: (data) =>
     new Promise((resolve, reject) => {
       supabase
-        .from("product")
+        .from("event")
         .insert([data])
         .then((result) => {
           if (!result.error) {
