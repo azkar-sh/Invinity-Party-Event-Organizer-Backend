@@ -101,4 +101,45 @@ module.exports = {
       return wrapper.response(response, status, statusText, errorData);
     }
   },
+  updateUser: async (request, response) => {
+    try {
+      console.log(request.params);
+      console.log(request.body);
+      const { id } = request.params;
+      const { name, username, gender, profession, nationality, dateOfBirth } =
+        request.body;
+
+      const checkId = userModel.getUserById(id);
+
+      if (checkId.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Id ${id} isn't Found!`,
+          []
+        );
+      }
+
+      const setData = {
+        name,
+        username,
+        gender,
+        profession,
+        nationality,
+        dateOfBirth,
+      };
+
+      const result = await userModel.updateUser(id, setData);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Update Data",
+        result.data
+      );
+    } catch (error) {
+      const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
 };

@@ -19,8 +19,8 @@ module.exports = {
   createWishlist: async (request, response) => {
     try {
       console.log(request.body);
-      const { wishlistId, eventId, userid } = request.body;
-      const setData = { wishlistId, eventId, userid };
+      const { eventId, userid } = request.body;
+      const setData = { eventId, userid };
 
       const result = await wishlistModel.createWishlist(setData);
 

@@ -72,4 +72,86 @@ module.exports = {
       return wrapper.response(response, status, statusText, errorData);
     }
   },
+  updateEvent: async (request, response) => {
+    try {
+      console.log(request.params);
+      console.log(request.bdoy);
+      const { id } = request.params;
+      const { name, category, location, detail, dateTimeShow, price } =
+        request.body;
+
+      const checkId = await eventModel.getEventById(id);
+
+      if (checkId.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Id ${id} isn't Found!`,
+          []
+        );
+      }
+
+      const setData = {
+        name,
+        category,
+        location,
+        detail,
+        dateTimeShow,
+        price,
+      };
+
+      const result = await eventModel.updateEvent(id, setData);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Update Data",
+        result.data
+      );
+    } catch (error) {
+      const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
+  deleteEvent: async (request, response) => {
+    try {
+      console.log(request.params);
+      console.log(request.bdoy);
+      const { id } = request.params;
+      const { name, category, location, detail, dateTimeShow, price } =
+        request.body;
+
+      const checkId = await eventModel.getEventById(id);
+
+      if (checkId.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Id ${id} isn't Found!`,
+          []
+        );
+      }
+
+      const deleteData = {
+        name,
+        category,
+        location,
+        detail,
+        dateTimeShow,
+        price,
+      };
+
+      const result = await eventModel.deleteEvent(id, deleteData);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Delete Data!",
+        result.data
+      );
+    } catch (error) {
+      const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
 };
