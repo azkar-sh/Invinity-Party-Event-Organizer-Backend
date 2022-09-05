@@ -109,7 +109,7 @@ module.exports = {
       const { name, username, gender, profession, nationality, dateOfBirth } =
         request.body;
 
-      const checkId = userModel.getUserById(id);
+      const checkId = await userModel.getUserById(id);
 
       if (checkId.data.length < 1) {
         return wrapper.response(
@@ -135,6 +135,57 @@ module.exports = {
         response,
         result.status,
         "Success Update Data",
+        result.data
+      );
+    } catch (error) {
+      const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
+  deleteUser: async (request, response) => {
+    try {
+      console.log(request.params);
+      console.log(request.body);
+      const { id } = request.params;
+      const {
+        name,
+        username,
+        gender,
+        profession,
+        nationality,
+        dateOfBirth,
+        email,
+        password,
+      } = request.body;
+
+      const checkId = await userModel.getUserById(id);
+
+      if (checkId.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Id ${id} isn't Found!`,
+          []
+        );
+      }
+
+      const deleteData = {
+        name,
+        username,
+        gender,
+        profession,
+        nationality,
+        dateOfBirth,
+        email,
+        password,
+      };
+
+      const result = await userModel.deleteUser(id, deleteData);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Delete Data!",
         result.data
       );
     } catch (error) {
