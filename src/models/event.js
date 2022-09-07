@@ -1,11 +1,27 @@
 const supabase = require("../config/supabase");
 
 module.exports = {
-  getAllEvent: () =>
+  getCountEvent: () =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("event")
+        .select("*", { count: "exact" })
+        .then((result) => {
+          if (!result.error) {
+            resolve(result.count);
+          } else {
+            reject(result);
+          }
+        });
+    }),
+  getAllEvent: (offset, limit, name) =>
     new Promise((resolve, reject) => {
       supabase
         .from("event")
         .select("*")
+        .range(offset, offset + limit - 1)
+        .textSearch("name", name) // search name of event
+        .order("createdAt", { ascending: true }) // sort
         .then((result) => {
           if (!result.error) {
             resolve(result);
@@ -14,6 +30,7 @@ module.exports = {
           }
         });
     }),
+
   getEventById: (id) =>
     new Promise((resolve, reject) => {
       supabase

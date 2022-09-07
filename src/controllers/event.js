@@ -4,18 +4,49 @@ const wrapper = require("../utils/wrapper");
 module.exports = {
   getAllEvent: async (request, response) => {
     try {
-      const result = await eventModel.getAllEvent();
+      // pagination
+      // console.log(request.query);
+      // eslint-disable-next-line prefer-const
+      let { page, limit, name } = request.query;
+      page = +page;
+      limit = +limit;
+      const totalData = await eventModel.getCountEvent();
+      const totalPage = Math.ceil(totalData / limit);
+      const pagination = {
+        page,
+        totalPage,
+        limit,
+        totalData,
+      };
+      const offset = page * limit - limit;
+
+      // search
+      // const { name } = request.query;
+
+      const result = await eventModel.getAllEvent(offset, limit, name);
+
+      if (result.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Name ${name} isn't Found!`,
+          []
+        );
+      }
+
       return wrapper.response(
         response,
         result.status,
         "Success get All Data!",
-        result.data
+        result.data,
+        pagination
       );
     } catch (error) {
       const { status, statusText, error: errorData } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },
+
   getEventById: async (request, response) => {
     try {
       const { id } = request.params;
@@ -47,7 +78,7 @@ module.exports = {
   },
   createEvent: async (request, response) => {
     try {
-      console.log(request.body);
+      // console.log(request.body);
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
       const setData = {
@@ -74,8 +105,8 @@ module.exports = {
   },
   updateEvent: async (request, response) => {
     try {
-      console.log(request.params);
-      console.log(request.bdoy);
+      // console.log(request.params);
+      // console.log(request.bdoy);
       const { id } = request.params;
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
@@ -115,8 +146,8 @@ module.exports = {
   },
   deleteEvent: async (request, response) => {
     try {
-      console.log(request.params);
-      console.log(request.bdoy);
+      // console.log(request.params);
+      // console.log(request.bdoy);
       const { id } = request.params;
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
