@@ -8,8 +8,9 @@ module.exports = {
       // console.log(request.query);
       // eslint-disable-next-line prefer-const
       let { page, limit, name } = request.query;
-      page = +page;
-      limit = +limit;
+      page = +page || 1;
+      limit = +limit || 10;
+
       const totalData = await eventModel.getCountEvent();
       const totalPage = Math.ceil(totalData / limit);
       const pagination = {
@@ -108,8 +109,15 @@ module.exports = {
       // console.log(request.params);
       // console.log(request.bdoy);
       const { id } = request.params;
-      const { name, category, location, detail, dateTimeShow, price } =
-        request.body;
+      const {
+        name,
+        category,
+        location,
+        detail,
+        dateTimeShow,
+        price,
+        updateAt,
+      } = request.body;
 
       const checkId = await eventModel.getEventById(id);
 
@@ -122,6 +130,7 @@ module.exports = {
         );
       }
 
+      // updateAt
       const setData = {
         name,
         category,
@@ -129,6 +138,7 @@ module.exports = {
         detail,
         dateTimeShow,
         price,
+        updateAt,
       };
 
       const result = await eventModel.updateEvent(id, setData);
