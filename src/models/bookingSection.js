@@ -6,7 +6,6 @@ module.exports = {
       supabase
         .from("bookingSection")
         .select(`*`)
-        // .select(`*, event(name, location, dateTimeShow)`)
         .then((result) => {
           if (!result.error) {
             resolve(result);
@@ -33,7 +32,7 @@ module.exports = {
       supabase
         .from("bookingSection")
         .select(`*, booking(*)`)
-        .eq("bookingId", id)
+        .eq("sectionId", id)
         // .select(`*, event(name, location, dateTimeShow)`)
         .then((result) => {
           if (!result.error) {

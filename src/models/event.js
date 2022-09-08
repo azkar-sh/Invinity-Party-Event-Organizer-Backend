@@ -20,7 +20,7 @@ module.exports = {
         .from("event")
         .select("*")
         .range(offset, offset + limit - 1)
-        .textSearch("name", name) // search name of event
+        .ilike("name", `%${name}%`) // search name of event
         .order("createdAt", { ascending: true }) // sort
         .then((result) => {
           if (!result.error) {

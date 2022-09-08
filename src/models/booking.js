@@ -33,13 +33,41 @@ module.exports = {
       supabase
         .from("booking")
         .select(`*, bookingSection(*)`)
-        .eq("bookingId", id)
+        .eq("userId", id)
         // .select(`*, event(name, location, dateTimeShow)`)
         .then((result) => {
           if (!result.error) {
             resolve(result);
           } else {
             reject(result);
+          }
+        });
+    }),
+  updateBooking: (id, data) =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("booking")
+        .update(data)
+        .eq("bookingId", id)
+        .then((result) => {
+          if (!result.error) {
+            resolve(result);
+          } else {
+            reject(result);
+          }
+        });
+    }),
+  deleteBooking: (id, data) =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("booking")
+        .delete(data)
+        .eq("bookingId", id)
+        .then((result) => {
+          if (!result.error) {
+            resolve(result);
+          } else {
+            reject(resolve);
           }
         });
     }),
