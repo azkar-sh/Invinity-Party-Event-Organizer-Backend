@@ -20,10 +20,6 @@ module.exports = {
         totalData,
       };
       const offset = page * limit - limit;
-
-      // search
-      // const { name } = request.query;
-
       const result = await eventModel.getAllEvent(offset, limit, name);
 
       if (result.data.length < 1) {
@@ -82,6 +78,7 @@ module.exports = {
       // console.log(request.body);
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
+      const { filename, mimetype } = request.file;
       const setData = {
         name,
         category,
@@ -91,7 +88,25 @@ module.exports = {
         price,
       };
 
-      const result = await eventModel.createEvent(setData);
+      const uploadImage = {
+        image: filename ? `${filename}.${mimetype.split("/")[1]} ` : " ",
+      };
+
+      if (
+        (request.file.mimetype !== "image/jpg" &&
+          request.file.mimetype !== "image/png") ||
+        request.file.size > 1024 * 1024
+      ) {
+        return wrapper.response(
+          response,
+          404,
+          "File Format or Size is Incorrect!",
+          []
+        );
+      }
+      // const uploadResult = await eventModel.createEvent(uploadImage);
+
+      const result = await eventModel.createEvent(setData, uploadImage);
 
       return wrapper.response(
         response,
