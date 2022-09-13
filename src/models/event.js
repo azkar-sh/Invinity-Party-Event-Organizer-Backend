@@ -21,6 +21,8 @@ module.exports = {
         .select("*")
         .range(offset, offset + limit - 1)
         .ilike("name", `%${name}%`) // search name of event
+        // .gt("dateTimeShow", `${dateTimeShow.toISOString(dateTimeShow)}`)
+        // .lt("dateTimeShow", `${nextDay.toISOString()}`);
         .order("createdAt", { ascending: true }) // sort bisa ditambahkan melalui Postman dan dibuat dinamis
         .then((result) => {
           if (!result.error) {

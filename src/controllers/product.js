@@ -1,5 +1,7 @@
 const productModel = require("../models/product");
 const wrapper = require("../utils/wrapper");
+const client = require("../config/redis");
+const cloudinary = require("../config/cloudinary");
 
 module.exports = {
   showGreetings: async (request, response) => {
@@ -46,6 +48,13 @@ module.exports = {
       // }
 
       const result = await productModel.getAllProduct(offset, limit);
+
+      client.setEx(
+        `getProduct:${JSON.stringify(request.query)}`,
+        3600,
+        JSON.stringify({ result: result.data, pagination })
+      );
+
       return wrapper.response(
         response,
         result.status,
@@ -74,14 +83,16 @@ module.exports = {
 
       const result = await productModel.getProductById(id);
 
-      // if (result.data.length < 1) {
-      //   return wrapper.response(
-      //     response,
-      //     404,
-      //     `Data By Id ${id} Not Found`,
-      //     []
-      //   );
-      // }
+      if (result.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data By Id ${id} Not Found`,
+          []
+        );
+      }
+
+      client.setEx(`getProduct:${id}`, 3600, JSON.stringify(result.data));
 
       return wrapper.response(
         response,
@@ -151,7 +162,15 @@ module.exports = {
         // updatedAt: ...
       };
 
-      // bikin proses untuk ngecek apakah semua property di daam setData ada isinya ?
+      // bikin proses untuk ngecek apakah semua property di dalam setData ada isinya ?
+      console.log(checkId.data[0].image);
+      // hilangkan ekstensi sebelum di masukan ke proses destroy
+      // cloudinary.uploader.destroy(
+      //   "Event-Organizing/Product/rbrskppupgixjqiz6kqm",
+      //   (result) => {
+      //     console.log(result);
+      //   }
+      // );
 
       const result = await productModel.updateProduct(id, setData);
 

@@ -7,7 +7,7 @@ module.exports = {
       // pagination
       // console.log(request.query);
       // eslint-disable-next-line prefer-const
-      let { page, limit, name } = request.query;
+      let { page, limit, name, dateTimeShow } = request.query;
       page = +page || 1;
       limit = +limit || 10;
 
@@ -20,7 +20,12 @@ module.exports = {
         totalData,
       };
       const offset = page * limit - limit;
-      const result = await eventModel.getAllEvent(offset, limit, name);
+      const result = await eventModel.getAllEvent(
+        offset,
+        limit,
+        name,
+        dateTimeShow
+      );
 
       if (result.data.length < 1) {
         return wrapper.response(

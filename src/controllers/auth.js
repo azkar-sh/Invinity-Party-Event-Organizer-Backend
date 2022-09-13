@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authModel = require("../models/auth");
 const wrapper = require("../utils/wrapper");
+const client = require("../config/redis");
 
 module.exports = {
   showGreetings: async (request, response) => {
@@ -33,13 +34,20 @@ module.exports = {
         password: hashPass,
       };
 
+      const checkEmail = await authModel.getUserByEmail(email);
+      if (checkEmail.data.length) {
+        return wrapper.response(response, 404, "Email Registered", null);
+      }
+
       const result = await authModel.register(setData);
+
+      const responData = { userId: result.data[0].userId };
 
       return wrapper.response(
         response,
         result.status,
         "Success Create Data!",
-        result.data
+        responData
       );
     } catch (error) {
       const { status, statusText, error: errorData } = error;
@@ -57,7 +65,6 @@ module.exports = {
       }
 
       // 2. PROSES PENCOCOKAN PASSWORD
-
       const validPassword = await bcrypt.compare(
         password,
         checkEmail.data[0].password
@@ -83,6 +90,21 @@ module.exports = {
         userId: payload.userId,
         token,
       });
+    } catch (error) {
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
+  logout: async (request, response) => {
+    try {
+      let token = request.headers.authorization;
+      token = token.split(" ")[1];
+      client.setEx(`accessToken:${token}`, 3600 * 48, token);
+      return wrapper.response(response, 200, "Success Logout", null);
     } catch (error) {
       const {
         status = 500,
