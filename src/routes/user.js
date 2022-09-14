@@ -3,12 +3,25 @@ const express = require("express");
 const Router = express.Router();
 
 const userController = require("../controllers/user");
+const authMiddleware = require("../middleware/auth");
+const uploadMiddleware = require("../middleware/uploadFile");
+// const redisMiddleware = require("../middleware/redis");
 
 Router.get("/greetings", userController.showGreetings);
 Router.get("/", userController.getAllUser);
 Router.get("/:id", userController.getUserById);
 Router.post("/", userController.createUser);
-Router.patch("/:id", userController.updateUser);
-Router.delete("/:id", userController.deleteUser);
+Router.post(
+  "/uploadImage/:id",
+  uploadMiddleware.uploadUser,
+  userController.uploadImage
+);
+Router.patch(
+  "/:id",
+  authMiddleware.authentication,
+  uploadMiddleware.uploadUser,
+  userController.updateUser
+);
+Router.delete("/:id", authMiddleware.authentication, userController.deleteUser);
 
 module.exports = Router;

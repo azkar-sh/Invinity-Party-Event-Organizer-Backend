@@ -26,10 +26,10 @@ module.exports = {
   register: async (request, response) => {
     try {
       // console.log(request.body);
-      const { name, email, password } = request.body;
+      const { username, email, password } = request.body;
       const hashPass = await bcrypt.hash(password, 10);
       const setData = {
-        name,
+        username,
         email,
         password: hashPass,
       };
@@ -42,7 +42,7 @@ module.exports = {
       const result = await authModel.register(setData);
 
       const responData = { userId: result.data[0].userId };
-
+      // console.log(responData);
       return wrapper.response(
         response,
         result.status,
@@ -61,7 +61,7 @@ module.exports = {
       // 1. PROSES PENGECEKAN EMAIL
       const checkEmail = await authModel.getUserByEmail(email);
       if (checkEmail.data.length < 1) {
-        return wrapper.response(response, 404, "Email Not Registed", null);
+        return wrapper.response(response, 404, "Email Not Registered", null);
       }
 
       // 2. PROSES PENCOCOKAN PASSWORD

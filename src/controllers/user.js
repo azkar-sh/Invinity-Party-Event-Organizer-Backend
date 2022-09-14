@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const userModel = require("../models/user");
 const wrapper = require("../utils/wrapper"); // variabel respons when data returned
 
@@ -103,12 +104,21 @@ module.exports = {
   },
   updateUser: async (request, response) => {
     try {
-      console.log(request.params);
-      console.log(request.body);
+      // console.log(request.params);
+      // console.log(request.body);
       const { id } = request.params;
-      const { name, username, gender, profession, nationality, dateOfBirth } =
-        request.body;
+      const {
+        name,
+        username,
+        gender,
+        profession,
+        nationality,
+        dateOfBirth,
+        email,
+        password,
+      } = request.body;
 
+      const hashPass = await bcrypt.hash(password, 10);
       const checkId = await userModel.getUserById(id);
 
       if (checkId.data.length < 1) {
@@ -127,6 +137,8 @@ module.exports = {
         profession,
         nationality,
         dateOfBirth,
+        email,
+        password: hashPass,
       };
 
       const result = await userModel.updateUser(id, setData);
@@ -135,6 +147,38 @@ module.exports = {
         response,
         result.status,
         "Success Update Data",
+        result.data
+      );
+    } catch (error) {
+      const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
+  uploadImage: async (request, response) => {
+    try {
+      const { id } = request.params;
+      const { filename, mimetype } = request.file;
+
+      const checkId = await userModel.getUserById(id);
+      if (checkId.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Id ${id} isn't Found!`,
+          []
+        );
+      }
+
+      const setData = {
+        image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
+      };
+
+      const result = await userModel.uploadImage(id, setData);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Upload Image User!",
         result.data
       );
     } catch (error) {

@@ -1,5 +1,7 @@
 const eventModel = require("../models/event");
 const wrapper = require("../utils/wrapper");
+const client = require("../config/redis");
+const cloudinary = require("../config/cloudinary");
 
 module.exports = {
   getAllEvent: async (request, response) => {
@@ -7,7 +9,7 @@ module.exports = {
       // pagination
       // console.log(request.query);
       // eslint-disable-next-line prefer-const
-      let { page, limit, name, dateTimeShow } = request.query;
+      let { page, limit, sort } = request.query;
       page = +page || 1;
       limit = +limit || 10;
 
@@ -20,21 +22,36 @@ module.exports = {
         totalData,
       };
       const offset = page * limit - limit;
+
+      // dynamic sorting and searching
+      let sortColumn = "createdAt";
+      let sortType = "asc";
+      if (sort) {
+        sortColumn = sort.split("-")[0];
+        sortType = sort.split("-")[1];
+      }
+      if (sortType.toLowerCase() === "asc") {
+        sortType = true;
+      } else {
+        sortType = false;
+      }
+
       const result = await eventModel.getAllEvent(
         offset,
         limit,
-        name,
-        dateTimeShow
+        sortColumn,
+        sortType
       );
 
       if (result.data.length < 1) {
-        return wrapper.response(
-          response,
-          404,
-          `Data by Name ${name} isn't Found!`,
-          []
-        );
+        return wrapper.response(response, 404, `Data is not Found!`, []);
       }
+
+      client.setEx(
+        `getEvent:${JSON.stringify(request.query)}`,
+        3600,
+        JSON.stringify({ result: result.data, pagination })
+      );
 
       return wrapper.response(
         response,
@@ -80,7 +97,6 @@ module.exports = {
   },
   createEvent: async (request, response) => {
     try {
-      // console.log(request.body);
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
       const { filename, mimetype } = request.file;
@@ -91,27 +107,10 @@ module.exports = {
         detail,
         dateTimeShow,
         price,
+        image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
 
-      const uploadImage = {
-        image: filename ? `${filename}.${mimetype.split("/")[1]} ` : " ",
-      };
-
-      if (
-        (request.file.mimetype !== "image/jpg" &&
-          request.file.mimetype !== "image/png") ||
-        request.file.size > 1024 * 1024
-      ) {
-        return wrapper.response(
-          response,
-          404,
-          "File Format or Size is Incorrect!",
-          []
-        );
-      }
-      // const uploadResult = await eventModel.createEvent(uploadImage);
-
-      const result = await eventModel.createEvent(setData, uploadImage);
+      const result = await eventModel.createEvent(setData);
 
       return wrapper.response(
         response,
@@ -126,9 +125,8 @@ module.exports = {
   },
   updateEvent: async (request, response) => {
     try {
-      // console.log(request.params);
-      // console.log(request.bdoy);
       const { id } = request.params;
+      const { filename, mimetype } = request.file;
       const {
         name,
         category,
@@ -159,7 +157,13 @@ module.exports = {
         dateTimeShow,
         price,
         updateAt,
+        image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
+
+      cloudinary.uploader.destroy(
+        checkId.data[0].image.split(".")[0],
+        (result) => result
+      );
 
       const result = await eventModel.updateEvent(id, setData);
 
@@ -176,8 +180,6 @@ module.exports = {
   },
   deleteEvent: async (request, response) => {
     try {
-      // console.log(request.params);
-      // console.log(request.bdoy);
       const { id } = request.params;
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
@@ -201,6 +203,11 @@ module.exports = {
         dateTimeShow,
         price,
       };
+
+      cloudinary.uploader.destroy(
+        checkId.data[0].image.split(".")[0],
+        (result) => result
+      );
 
       const result = await eventModel.deleteEvent(id, deleteData);
 

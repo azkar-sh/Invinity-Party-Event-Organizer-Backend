@@ -14,16 +14,16 @@ module.exports = {
           }
         });
     }),
-  getAllEvent: (offset, limit, name) =>
+  getAllEvent: (offset, limit, sortColumn, sortType) =>
     new Promise((resolve, reject) => {
       supabase
         .from("event")
         .select("*")
         .range(offset, offset + limit - 1)
-        .ilike("name", `%${name}%`) // search name of event
+        .order(sortColumn, { ascending: sortType })
+        // .ilike("name", `%${name}%`) // search name of event
         // .gt("dateTimeShow", `${dateTimeShow.toISOString(dateTimeShow)}`)
         // .lt("dateTimeShow", `${nextDay.toISOString()}`);
-        .order("createdAt", { ascending: true }) // sort bisa ditambahkan melalui Postman dan dibuat dinamis
         .then((result) => {
           if (!result.error) {
             resolve(result);

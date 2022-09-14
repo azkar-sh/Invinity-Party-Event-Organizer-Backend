@@ -57,4 +57,26 @@ module.exports = {
       return wrapper.response(response, 400, error.message, null);
     }
   },
+  getAllEvent: async (request, response, next) => {
+    try {
+      let result = await client.get(
+        `getEvent:${JSON.stringify(request.query)}`
+      );
+      if (result !== null) {
+        console.log("DATA ADA DIDALAM REDIS");
+        result = JSON.parse(result);
+        return wrapper.response(
+          response,
+          200,
+          "Success Get Data !",
+          result.result,
+          result.pagination
+        );
+      }
+      console.log("DATA TIDAK ADA DIDALAM REDIS");
+      return next();
+    } catch (error) {
+      return wrapper.response(response, 400, error.message, null);
+    }
+  },
 };

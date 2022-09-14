@@ -25,7 +25,7 @@ module.exports = {
   getAllProduct: async (request, response) => {
     try {
       // console.log(request.query);
-      let { page, limit, search, sort, sortType } = request.query;
+      let { page, limit, sort, searchDateCreated } = request.query;
       page = +page;
       limit = +limit;
 
@@ -41,13 +41,33 @@ module.exports = {
 
       const offset = page * limit - limit;
 
-      // if (sortType.toLowerCase() === "asc") {
-      //   sortType = true;
-      // } else {
-      //   sortType = false;
-      // }
+      let sortColumn = "dateTimeShow";
+      let sortType = "asc";
+      if (sort) {
+        sortColumn = sort.split(" ")[0];
+        sortType = sort.split(" ")[1];
+      }
+      if (sortType.toLowerCase() === "asc") {
+        sortType = true;
+      } else {
+        sortType = false;
+      }
 
-      const result = await productModel.getAllProduct(offset, limit);
+      let day;
+      let nextDay;
+      if (searchDateCreated) {
+        day = new Date(searchDateCreated);
+        nextDay = new Date(new Date(day).setDate(day.getDate() + 1));
+      }
+
+      const result = await productModel.getAllProduct(
+        offset,
+        limit,
+        sortColumn,
+        sortType,
+        day,
+        nextDay
+      );
 
       client.setEx(
         `getProduct:${JSON.stringify(request.query)}`,
@@ -63,7 +83,6 @@ module.exports = {
         pagination
       );
     } catch (error) {
-      // console.log(error);
       const {
         status = 500,
         statusText = "Internal Server Error",
@@ -113,12 +132,12 @@ module.exports = {
     try {
       // console.log(request.body);
       const { name, price } = request.body;
-      const { filename, mimetype } = request.file;
+      const { filename } = request.file;
       // console.log(request.file);
       const setData = {
         name,
         price,
-        image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
+        image: filename || "",
       };
 
       const result = await productModel.createProduct(setData);
@@ -164,7 +183,6 @@ module.exports = {
 
       // bikin proses untuk ngecek apakah semua property di dalam setData ada isinya ?
       console.log(checkId.data[0].image);
-      // hilangkan ekstensi sebelum di masukan ke proses destroy
       // cloudinary.uploader.destroy(
       //   "Event-Organizing/Product/rbrskppupgixjqiz6kqm",
       //   (result) => {

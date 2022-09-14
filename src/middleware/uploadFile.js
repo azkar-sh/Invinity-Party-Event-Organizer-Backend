@@ -5,26 +5,6 @@ const cloudinary = require("../config/cloudinary");
 
 module.exports = {
   uploadProduct: (request, response, next) => {
-    // JIKA INGIN MENYIMPAN FILE KE FOLDER PROJECT
-    // const storage = multer.diskStorage({
-    //   destination(req, file, cb) {
-    //     cb(null, "public/uploads/product");
-    //   },
-    //   filename(req, file, cb) {
-    //     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    //     // console.log(file);
-    //     // file = {
-    //     //     fieldname: 'image',
-    //     //     originalname: 'Visual Background - Fullstack Webiste-01.png',
-    //     //     encoding: '7bit',
-    //     //     mimetype: 'image/png'
-    //     //   }
-    //     // console.log(uniqueSuffix);
-    //     // uniqueSuffix = 1662708893973-855005446
-    //     cb(null, `${file.fieldname}-${uniqueSuffix}-${file.originalname}`);
-    //   },
-    // });
-    // JIKA INGIN MENYIMPAN KE CLOUNDINARY
     const storage = new CloudinaryStorage({
       cloudinary,
       params: {
@@ -34,6 +14,7 @@ module.exports = {
 
     const upload = multer({ storage }).single("image");
 
+    // eslint-disable-next-line consistent-return
     upload(request, response, (err) => {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading.
@@ -55,9 +36,24 @@ module.exports = {
         folder: "Event-Organizer/Event",
       },
     });
+    // fileSize: 512000
+    const upload = multer({
+      storage,
+      limits: { fileSize: 512000 },
+      // eslint-disable-next-line object-shorthand, consistent-return, func-names
+      fileFilter: function (req, file, callback) {
+        if (
+          file.mimetype !== "image/jpg" &&
+          file.mimetype !== "image/png" &&
+          file.mimetype !== "image/jpeg"
+        ) {
+          return callback(new Error("File format incorrect!"));
+        }
+        callback(null, true);
+      },
+    }).single("image");
 
-    const upload = multer({ storage }).single("image");
-
+    // eslint-disable-next-line consistent-return
     upload(request, response, (err) => {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading.
@@ -79,9 +75,24 @@ module.exports = {
         folder: "Event-Organizer/User",
       },
     });
+    // fileSize: 512000
+    const upload = multer({
+      storage,
+      limits: { fileSize: 512000 },
+      // eslint-disable-next-line object-shorthand, consistent-return, func-names
+      fileFilter: function (req, file, callback) {
+        if (
+          file.mimetype !== "image/jpg" &&
+          file.mimetype !== "image/png" &&
+          file.mimetype !== "image/jpeg"
+        ) {
+          return callback(new Error("File format incorrect!"));
+        }
+        callback(null, true);
+      },
+    }).single("image");
 
-    const upload = multer({ storage }).single("image");
-
+    // eslint-disable-next-line consistent-return
     upload(request, response, (err) => {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading.

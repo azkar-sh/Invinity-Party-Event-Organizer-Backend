@@ -24,7 +24,7 @@ Router.get(
   "/",
   authMiddleware.authentication,
   authMiddleware.isAdmin,
-  redisMiddleware.getAllProduct,
+  // redisMiddleware.getAllProduct,
   productController.getAllProduct
 );
 Router.get(

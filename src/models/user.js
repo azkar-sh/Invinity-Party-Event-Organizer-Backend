@@ -56,6 +56,20 @@ module.exports = {
           }
         });
     }),
+  uploadImage: (id, data) =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("user")
+        .update(data)
+        .eq("userId", id)
+        .then((result) => {
+          if (!result.error) {
+            resolve(result);
+          } else {
+            reject(result);
+          }
+        });
+    }),
   deleteUser: (id, data) =>
     new Promise((resolve, reject) => {
       supabase
