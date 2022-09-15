@@ -155,7 +155,7 @@ module.exports = {
         detail,
         dateTimeShow,
         price,
-        updatedAt: "now()",
+        updateAt: "now()",
         image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
 
