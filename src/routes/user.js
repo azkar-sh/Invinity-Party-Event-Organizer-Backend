@@ -9,7 +9,7 @@ const uploadMiddleware = require("../middleware/uploadFile");
 
 Router.get("/greetings", userController.showGreetings);
 Router.get("/", userController.getAllUser);
-Router.get("/:id", userController.getUserById);
+Router.get("/:id", authMiddleware.authentication, userController.getUserById);
 Router.post("/", userController.createUser);
 Router.post(
   "/uploadImage/:id",

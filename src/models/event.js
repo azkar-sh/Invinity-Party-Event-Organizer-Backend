@@ -78,7 +78,7 @@ module.exports = {
     new Promise((resolve, reject) => {
       supabase
         .from("event")
-        .delete(data)
+        .delete(data) // ()
         .eq("eventId", id)
         .then((result) => {
           if (!result.error) {

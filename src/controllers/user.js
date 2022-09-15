@@ -67,7 +67,6 @@ module.exports = {
   },
   createUser: async (request, response) => {
     try {
-      console.log(request.body);
       const {
         name,
         username,
@@ -195,16 +194,14 @@ module.exports = {
         );
       }
 
-      const currPassword = checkId.data[0].password;
-      const hashOldPassword = await bcrypt.hash(oldPassword, 10);
+      const currPassword = checkId.data[0].password; // 123456
+
+      const matchPassword = await bcrypt.compare(oldPassword, currPassword); // compare not hash and hashed
       const hashNewPassword = await bcrypt.hash(newPassword, 10);
-      const matchPassword = await bcrypt.compare(currPassword, hashOldPassword);
-
       console.log(matchPassword);
-      console.log(`curr ${currPassword}`);
-      console.log(`hashold ${hashOldPassword}`);
+      // console.log(`curr ${currPassword}`);
 
-      if (hashOldPassword !== currPassword) {
+      if (!matchPassword) {
         return wrapper.response(
           response,
           400,
@@ -265,8 +262,6 @@ module.exports = {
   },
   deleteUser: async (request, response) => {
     try {
-      console.log(request.params);
-      console.log(request.body);
       const { id } = request.params;
       const {
         name,
