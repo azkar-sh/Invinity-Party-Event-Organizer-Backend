@@ -133,15 +133,8 @@ module.exports = {
     try {
       const { id } = request.params;
       const { filename, mimetype } = request.file;
-      const {
-        name,
-        category,
-        location,
-        detail,
-        dateTimeShow,
-        price,
-        updateAt,
-      } = request.body;
+      const { name, category, location, detail, dateTimeShow, price } =
+        request.body;
 
       const checkId = await eventModel.getEventById(id);
 
@@ -162,7 +155,7 @@ module.exports = {
         detail,
         dateTimeShow,
         price,
-        updateAt,
+        updatedAt: "now()",
         image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
 

@@ -141,6 +141,7 @@ module.exports = {
         dateOfBirth,
         email,
         password: hashPass,
+        updatedAt: "now()",
       };
 
       const result = await userModel.updateUser(id, setData);
@@ -156,61 +157,79 @@ module.exports = {
       return wrapper.response(response, status, statusText, errorData);
     }
   },
-  // updatePassword: async (request, response) => {
-  //   try {
-  //     const { id } = request.params;
-  //     const {
-  //       oldPassword,
-  //       newPassword
-  //       confirmPassword,
-  //     } = request.body;
+  updatePassword: async (request, response) => {
+    try {
+      const { id } = request.params;
+      const { oldPassword, newPassword, confirmPassword } = request.body;
 
-  //     if(oldPassowrd === )
+      if (!oldPassword || !newPassword || !confirmPassword) {
+        return wrapper.response(response, 400, "Please fill all field!", null);
+      }
 
-  //     const validPassword = await bcrypt.compare(
-  //       password,
-  //       checkEmail.data[0].password
-  //     );
-  //     if (!validPassword) {
-  //       return wrapper.response(response, 400, "Wrong Password", null);
-  //     }
+      if (newPassword !== confirmPassword) {
+        return wrapper.response(
+          response,
+          400,
+          "Confirm Password doesn't match!",
+          null
+        );
+      }
 
-  //     const hashPass = await bcrypt.hash(password, 10);
-  //     const checkId = await userModel.getUserById(id);
+      if (newPassword.length < 6 || confirmPassword.length < 6) {
+        return wrapper.response(
+          response,
+          400,
+          "Password should be at least six characters.",
+          null
+        );
+      }
 
-  //     if (checkId.data.length < 1) {
-  //       return wrapper.response(
-  //         response,
-  //         404,
-  //         `Data by Id ${id} isn't Found!`,
-  //         []
-  //       );
-  //     }
+      const checkId = await userModel.getUserById(id);
 
-  //     const setData = {
-  //       name,
-  //       username,
-  //       gender,
-  //       profession,
-  //       nationality,
-  //       dateOfBirth,
-  //       email,
-  //       password: hashPass,
-  //     };
+      if (checkId.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by Id ${id} isn't Found!`,
+          []
+        );
+      }
 
-  //     const result = await userModel.updateUser(id, setData);
+      const currPassword = checkId.data[0].password;
+      const hashOldPassword = await bcrypt.hash(oldPassword, 10);
+      const hashNewPassword = await bcrypt.hash(newPassword, 10);
+      const matchPassword = await bcrypt.compare(currPassword, hashOldPassword);
 
-  //     return wrapper.response(
-  //       response,
-  //       result.status,
-  //       "Success Update Data",
-  //       result.data
-  //     );
-  //   } catch (error) {
-  //     const { status, statusText, error: errorData } = error;
-  //     return wrapper.response(response, status, statusText, errorData);
-  //   }
-  // },
+      console.log(matchPassword);
+      console.log(`curr ${currPassword}`);
+      console.log(`hashold ${hashOldPassword}`);
+
+      if (hashOldPassword !== currPassword) {
+        return wrapper.response(
+          response,
+          400,
+          "Your Old Password incorrect!",
+          null
+        );
+      }
+
+      const setData = {
+        password: hashNewPassword,
+      };
+
+      const result = await userModel.updateUser(id, setData);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Update Data",
+        result.data
+      );
+    } catch (error) {
+      const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
   uploadImage: async (request, response) => {
     try {
       const { id } = request.params;
@@ -227,6 +246,7 @@ module.exports = {
       }
 
       const setData = {
+        updatedAt: "now()",
         image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
 

@@ -16,7 +16,7 @@ Router.post(
   uploadMiddleware.uploadUser,
   userController.uploadImage
 );
-// Router.post("/updatePassword/:id", userController.updatePassword);
+Router.patch("/updatePassword/:id", userController.updatePassword);
 Router.patch(
   "/:id",
   authMiddleware.authentication,
