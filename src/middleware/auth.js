@@ -19,7 +19,7 @@ module.exports = {
         return wrapper.response(
           response,
           403,
-          "Your token is destroyed please login again",
+          "You've been logged out, Please login!",
           null
         );
       }
@@ -28,13 +28,6 @@ module.exports = {
         if (error) {
           return wrapper.response(response, 403, error.message, null);
         }
-        // console.log(result);
-        // result = {
-        //     userId: 'ca2973ed-9414-4135-84ac-799b6602d7b2',
-        //     role: 'user',
-        //     iat: 1662696652,
-        //     exp: 1662783052
-        //   }
         request.decodeToken = result;
         next();
       });
@@ -46,7 +39,16 @@ module.exports = {
     try {
       // PROSES UNTUK PENGECEKAN ROLE
       // console.log(request.decodeToken);
-      next();
+      let token = request.headers.authorization;
+      token = token.split(" ")[1];
+      jwt.verify(token, "RAHASIA", (error, result) => {
+        if (result.role === "1") {
+          return wrapper.response(response, 403, "You are not admin", null);
+        }
+        next();
+      });
+
+      // next();
     } catch (error) {
       console.log(error);
     }
