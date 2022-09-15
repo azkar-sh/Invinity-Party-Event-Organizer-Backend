@@ -77,6 +77,7 @@ module.exports = {
         dateOfBirth,
         email,
         password,
+        role,
       } = request.body;
       const setData = {
         name,
@@ -87,6 +88,7 @@ module.exports = {
         dateOfBirth,
         email,
         password,
+        role,
       };
 
       const result = await userModel.createUser(setData);
@@ -154,6 +156,61 @@ module.exports = {
       return wrapper.response(response, status, statusText, errorData);
     }
   },
+  // updatePassword: async (request, response) => {
+  //   try {
+  //     const { id } = request.params;
+  //     const {
+  //       oldPassword,
+  //       newPassword
+  //       confirmPassword,
+  //     } = request.body;
+
+  //     if(oldPassowrd === )
+
+  //     const validPassword = await bcrypt.compare(
+  //       password,
+  //       checkEmail.data[0].password
+  //     );
+  //     if (!validPassword) {
+  //       return wrapper.response(response, 400, "Wrong Password", null);
+  //     }
+
+  //     const hashPass = await bcrypt.hash(password, 10);
+  //     const checkId = await userModel.getUserById(id);
+
+  //     if (checkId.data.length < 1) {
+  //       return wrapper.response(
+  //         response,
+  //         404,
+  //         `Data by Id ${id} isn't Found!`,
+  //         []
+  //       );
+  //     }
+
+  //     const setData = {
+  //       name,
+  //       username,
+  //       gender,
+  //       profession,
+  //       nationality,
+  //       dateOfBirth,
+  //       email,
+  //       password: hashPass,
+  //     };
+
+  //     const result = await userModel.updateUser(id, setData);
+
+  //     return wrapper.response(
+  //       response,
+  //       result.status,
+  //       "Success Update Data",
+  //       result.data
+  //     );
+  //   } catch (error) {
+  //     const { status, statusText, error: errorData } = error;
+  //     return wrapper.response(response, status, statusText, errorData);
+  //   }
+  // },
   uploadImage: async (request, response) => {
     try {
       const { id } = request.params;

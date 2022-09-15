@@ -79,4 +79,17 @@ module.exports = {
       return wrapper.response(response, 400, error.message, null);
     }
   },
+  clearEvent: async (request, response, next) => {
+    try {
+      const keys = await client.keys("getEvent:*");
+      if (keys.length > 0) {
+        keys.forEach(async (element) => {
+          await client.del(element);
+        });
+      }
+      return next();
+    } catch (error) {
+      return wrapper.response(response, 400, error.message, null);
+    }
+  },
 };

@@ -111,6 +111,12 @@ module.exports = {
       };
 
       const result = await eventModel.createEvent(setData);
+      //-----
+      // client.setEx(
+      //   `getEvent:${JSON.stringify(request.query)}`,
+      //   3600,
+      //   JSON.stringify({ result: result.data })
+      // );
 
       return wrapper.response(
         response,
