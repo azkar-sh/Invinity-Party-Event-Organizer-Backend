@@ -2,3 +2,4 @@ node_modules
 mynote.txt
 dump.js
 codeshare.js
+.env
