@@ -1,11 +1,11 @@
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user");
 const wrapper = require("../utils/wrapper"); // variabel respons when data returned
+const cloudinary = require("../config/cloudinary");
 
 module.exports = {
   showGreetings: async (request, response) => {
     try {
-      // return response.status(200).send("Hello World!");
       return wrapper.response(
         response,
         200,
@@ -194,12 +194,11 @@ module.exports = {
         );
       }
 
-      const currPassword = checkId.data[0].password; // 123456
-
-      const matchPassword = await bcrypt.compare(oldPassword, currPassword); // compare not hash and hashed
+      const currPassword = checkId.data[0].password;
+      // comparing old password with current password
+      const matchPassword = await bcrypt.compare(oldPassword, currPassword);
+      // hash new Password
       const hashNewPassword = await bcrypt.hash(newPassword, 10);
-      console.log(matchPassword);
-      // console.log(`curr ${currPassword}`);
 
       if (!matchPassword) {
         return wrapper.response(
@@ -263,17 +262,6 @@ module.exports = {
   deleteUser: async (request, response) => {
     try {
       const { id } = request.params;
-      const {
-        name,
-        username,
-        gender,
-        profession,
-        nationality,
-        dateOfBirth,
-        email,
-        password,
-      } = request.body;
-
       const checkId = await userModel.getUserById(id);
 
       if (checkId.data.length < 1) {
@@ -285,18 +273,12 @@ module.exports = {
         );
       }
 
-      const deleteData = {
-        name,
-        username,
-        gender,
-        profession,
-        nationality,
-        dateOfBirth,
-        email,
-        password,
-      };
+      cloudinary.uploader.destroy(
+        checkId.data[0].image.split(".")[0],
+        (result) => result
+      );
 
-      const result = await userModel.deleteUser(id, deleteData);
+      const result = await userModel.deleteUser(id);
 
       return wrapper.response(
         response,

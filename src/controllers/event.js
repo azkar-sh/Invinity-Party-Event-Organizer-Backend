@@ -27,7 +27,9 @@ module.exports = {
       let sortColumn = "createdAt";
       let sortType = "asc";
       if (sort) {
+        // eslint-disable-next-line prefer-destructuring
         sortColumn = sort.split("-")[0];
+        // eslint-disable-next-line prefer-destructuring
         sortType = sort.split("-")[1];
       }
       if (sortType.toLowerCase() === "asc") {
@@ -111,12 +113,6 @@ module.exports = {
       };
 
       const result = await eventModel.createEvent(setData);
-      //-----
-      // client.setEx(
-      //   `getEvent:${JSON.stringify(request.query)}`,
-      //   3600,
-      //   JSON.stringify({ result: result.data })
-      // );
 
       return wrapper.response(
         response,
@@ -180,9 +176,6 @@ module.exports = {
   deleteEvent: async (request, response) => {
     try {
       const { id } = request.params;
-      const { name, category, location, detail, dateTimeShow, price } =
-        request.body;
-
       const checkId = await eventModel.getEventById(id);
 
       if (checkId.data.length < 1) {
@@ -194,21 +187,12 @@ module.exports = {
         );
       }
 
-      const deleteData = {
-        name,
-        category,
-        location,
-        detail,
-        dateTimeShow,
-        price,
-      };
-
       cloudinary.uploader.destroy(
         checkId.data[0].image.split(".")[0],
         (result) => result
       );
 
-      const result = await eventModel.deleteEvent(id, deleteData);
+      const result = await eventModel.deleteEvent(id);
 
       return wrapper.response(
         response,

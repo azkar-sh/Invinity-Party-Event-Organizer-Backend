@@ -39,18 +39,15 @@ module.exports = {
     try {
       // PROSES UNTUK PENGECEKAN ROLE
       // console.log(request.decodeToken);
-      let token = request.headers.authorization;
-      token = token.split(" ")[1];
-      jwt.verify(token, "RAHASIA", (error, result) => {
-        if (result.role === "1") {
-          return wrapper.response(response, 403, "You are not admin", null);
-        }
-        next();
-      });
+
+      if (request.decodeToken.role !== 1) {
+        return wrapper.response(response, 403, "You are not Admin!", null);
+      }
+      return next();
 
       // next();
     } catch (error) {
-      console.log(error);
+      return wrapper.response(response, 400, error.message, null);
     }
   },
 };
