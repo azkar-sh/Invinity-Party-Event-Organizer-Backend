@@ -1,8 +1,8 @@
 const redis = require("redis");
 
-const redisPassword = "7nOcJ7bghkI3oRD9NA9Gqc1eNzw3FT34";
-const redisHost = "redis-11443.c292.ap-southeast-1-1.ec2.cloud.redislabs.com";
-const redistPort = "11443";
+const redisPassword = process.env.REDIS_PASSWORD;
+const redisHost = process.env.REDIS_HOST;
+const redistPort = process.env.REDIS_PORT;
 
 // REMOTE :
 // 1. install redis-cli global = https://www.npmjs.com/package/redis-cli
