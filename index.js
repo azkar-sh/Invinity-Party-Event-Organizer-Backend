@@ -7,10 +7,9 @@ const helmet = require("helmet");
 const xss = require("xss-clean");
 const compression = require("compression");
 const bodyParser = require("body-parser");
-const routerNavigation = require("./routes"); // variabel rute
+const routerNavigation = require("./src/routes"); // variabel rute
 
 const app = express();
-// const port = 3001;
 const port = process.env.DB_PORT;
 
 app.use(cors());
