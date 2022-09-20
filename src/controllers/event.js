@@ -9,9 +9,10 @@ module.exports = {
       // pagination
       // console.log(request.query);
       // eslint-disable-next-line prefer-const
-      let { page, limit, sort } = request.query;
+      let { page, limit, name, sort, dateTimeShow } = request.query;
       page = +page || 1;
       limit = +limit || 10;
+      name = `${name}`;
 
       const totalData = await eventModel.getCountEvent();
       const totalPage = Math.ceil(totalData / limit);
@@ -38,11 +39,21 @@ module.exports = {
         sortType = false;
       }
 
+      let day;
+      let nextDay;
+      if (dateTimeShow) {
+        day = new Date(dateTimeShow);
+        nextDay = new Date(new Date(day).setDate(day.getDate() + 1));
+      }
+
       const result = await eventModel.getAllEvent(
         offset,
         limit,
+        name,
         sortColumn,
-        sortType
+        sortType,
+        day,
+        nextDay
       );
 
       if (result.data.length < 1) {
@@ -81,6 +92,14 @@ module.exports = {
           []
         );
       }
+
+      client.setEx(`getEvent:${id}`, 3600, JSON.stringify(result.data));
+
+      // client.setEx(
+      //   `getEvent:${JSON.stringify(request.params)}`,
+      //   3600,
+      //   JSON.stringify({ result: result.data })
+      // );
 
       return wrapper.response(
         response,

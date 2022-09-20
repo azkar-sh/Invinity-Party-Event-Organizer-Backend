@@ -14,23 +14,36 @@ module.exports = {
           }
         });
     }),
-  getAllEvent: (offset, limit, sortColumn, sortType) =>
+  getAllEvent: (offset, limit, name, sortColumn, sortType, day, nextDay) =>
     new Promise((resolve, reject) => {
-      supabase
+      const req = supabase
         .from("event")
         .select("*")
         .range(offset, offset + limit - 1)
-        .order(sortColumn, { ascending: sortType })
-        // .ilike("name", `%${name}%`) // search name of event
-        // .gt("dateTimeShow", `${dateTimeShow.toISOString(dateTimeShow)}`)
-        // .lt("dateTimeShow", `${nextDay.toISOString()}`);
-        .then((result) => {
+        .ilike("name", `%${name}%`)
+        .order(sortColumn, { ascending: sortType });
+      if (day) {
+        req
+          .gt("dateTimeShow", `${day.toISOString()}`)
+          .lt("dateTimeShow", `${nextDay.toISOString()}`)
+          .then((result) => {
+            if (!result.error) {
+              resolve(result);
+            } else {
+              reject(result);
+            }
+          });
+      } else {
+        req.then((result) => {
           if (!result.error) {
             resolve(result);
           } else {
             reject(result);
           }
         });
+      }
+      // .gt("dateTimeShow", `${day.toISOString()}`)
+      // .lt("dateTimeShow", `${nextDay.toISOString()}`)
     }),
 
   getEventById: (id) =>

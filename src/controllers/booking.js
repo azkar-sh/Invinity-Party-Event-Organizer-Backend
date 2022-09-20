@@ -1,5 +1,6 @@
 const bookingModel = require("../models/booking");
 const wrapper = require("../utils/wrapper");
+const groupingSection = require("../utils/groupingSection");
 
 module.exports = {
   getAllBooking: async (request, response) => {
@@ -19,7 +20,6 @@ module.exports = {
 
   createBooking: async (request, response) => {
     try {
-      console.log(request.body);
       const { userId, eventId, totalTicket, totalPayment, paymentMethod } =
         request.body;
       const setData = {
@@ -75,8 +75,6 @@ module.exports = {
   },
   updateBooking: async (request, response) => {
     try {
-      // console.log(request.params);
-      // console.log(request.bdoy);
       const { id } = request.params;
       const { userId, eventId, totalTicket, totalPayment, paymentMethod } =
         request.body;
@@ -115,8 +113,6 @@ module.exports = {
   },
   deleteBooking: async (request, response) => {
     try {
-      // console.log(request.params);
-      // console.log(request.bdoy);
       const { id } = request.params;
       const { userId, eventId, totalTicket, totalPayment, paymentMethod } =
         request.body;
@@ -150,6 +146,38 @@ module.exports = {
       );
     } catch (error) {
       const { status, statusText, error: errorData } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
+  getBookingSection: async (request, response) => {
+    try {
+      const { id } = request.params;
+      const result = await bookingModel.getBookingSection(id);
+
+      if (result.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data Booking Section by Event Id ${id} isn't Found!`,
+          []
+        );
+      }
+
+      // console.log(result.data);
+      const resultSection = groupingSection(result);
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Get Booking Section",
+        resultSection
+      );
+    } catch (error) {
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },

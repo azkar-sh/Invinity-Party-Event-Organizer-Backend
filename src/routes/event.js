@@ -14,7 +14,7 @@ Router.get(
   redisMiddleware.clearEvent,
   eventController.getAllEvent
 );
-Router.get("/:id", eventController.getEventById);
+Router.get("/:id", redisMiddleware.getEventById, eventController.getEventById);
 Router.post(
   "/",
   authMiddleware.authentication,

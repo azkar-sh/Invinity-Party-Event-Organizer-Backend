@@ -71,4 +71,18 @@ module.exports = {
           }
         });
     }),
+  getBookingSection: (id) =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("booking")
+        .select(`*, bookingSection(section)`)
+        .eq("eventId", id)
+        .then((result) => {
+          if (!result.error) {
+            resolve(result);
+          } else {
+            reject(resolve);
+          }
+        });
+    }),
 };
