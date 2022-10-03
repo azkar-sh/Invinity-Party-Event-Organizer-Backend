@@ -7,7 +7,6 @@ module.exports = {
       const { id } = request.params;
       let result = await client.get(`getProduct:${id}`);
       if (result !== null) {
-        // console.log("DATA ADA DIDALAM REDIS");
         result = JSON.parse(result);
         return wrapper.response(
           response,
@@ -16,7 +15,7 @@ module.exports = {
           result
         );
       }
-      //   console.log("DATA TIDAK ADA DI DALAM REDIS");
+
       return next();
     } catch (error) {
       return wrapper.response(response, 400, error.message, null);
@@ -28,7 +27,6 @@ module.exports = {
         `getProduct:${JSON.stringify(request.query)}`
       );
       if (result !== null) {
-        // console.log("DATA ADA DIDALAM REDIS");
         result = JSON.parse(result);
         return wrapper.response(
           response,
@@ -38,7 +36,7 @@ module.exports = {
           result.pagination
         );
       }
-      //   console.log("DATA TIDAK ADA DIDALAM REDIS");
+
       return next();
     } catch (error) {
       return wrapper.response(response, 400, error.message, null);
@@ -63,7 +61,7 @@ module.exports = {
         `getEvent:${JSON.stringify(request.query)}`
       );
       if (result !== null) {
-        console.log("DATA ADA DIDALAM REDIS");
+        // Data have been in Redis
         result = JSON.parse(result);
         return wrapper.response(
           response,
@@ -73,7 +71,7 @@ module.exports = {
           result.pagination
         );
       }
-      console.log("DATA TIDAK ADA DIDALAM REDIS");
+      // Data haven't been in Redis
       return next();
     } catch (error) {
       return wrapper.response(response, 400, error.message, null);
@@ -84,7 +82,6 @@ module.exports = {
       const { id } = request.params;
       let result = await client.get(`getEvent:${id}`);
       if (result !== null) {
-        console.log("DATA ADA DIDALAM REDIS");
         result = JSON.parse(result);
         return wrapper.response(
           response,
@@ -93,7 +90,7 @@ module.exports = {
           result
         );
       }
-      console.log("DATA TIDAK ADA DI DALAM REDIS");
+
       return next();
     } catch (error) {
       return wrapper.response(response, 400, error.message, null);

@@ -24,7 +24,6 @@ module.exports = {
   },
   getAllProduct: async (request, response) => {
     try {
-      // console.log(request.query);
       let { page, limit, sort, searchDateCreated } = request.query;
       page = +page;
       limit = +limit;
@@ -130,10 +129,9 @@ module.exports = {
   },
   createProduct: async (request, response) => {
     try {
-      // console.log(request.body);
       const { name, price } = request.body;
       const { filename } = request.file;
-      // console.log(request.file);
+
       const setData = {
         name,
         price,
@@ -159,8 +157,6 @@ module.exports = {
   },
   updateProduct: async (request, response) => {
     try {
-      // console.log(request.params);
-      // console.log(request.body);
       const { id } = request.params;
       const { name, price } = request.body;
 

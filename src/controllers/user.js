@@ -105,8 +105,6 @@ module.exports = {
   },
   updateUser: async (request, response) => {
     try {
-      // console.log(request.params);
-      // console.log(request.body);
       const { id } = request.params;
       const {
         name,

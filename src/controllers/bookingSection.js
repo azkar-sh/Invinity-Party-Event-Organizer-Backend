@@ -19,7 +19,6 @@ module.exports = {
 
   createBookingSection: async (request, response) => {
     try {
-      console.log(request.body);
       const { bookingId, section } = request.body;
       const setData = {
         bookingId,

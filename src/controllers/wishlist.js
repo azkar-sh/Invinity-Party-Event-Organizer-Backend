@@ -5,7 +5,7 @@ module.exports = {
   getAllWishlist: async (request, response) => {
     try {
       // pagination
-      console.log(request.query);
+
       let { page, limit } = request.query;
       page = +page;
       limit = +limit;
@@ -36,39 +36,6 @@ module.exports = {
       return wrapper.response(response, status, statusText, errorData);
     }
   },
-  // searchWishlist: async (request, response) => {
-  //   try {
-  //     // pagination
-  //     console.log(request.query);
-  //     let { page, limit } = request.query;
-  //     page = +page;
-  //     limit = +limit;
-  //     const totalData = await wishlistModel.getCountWishlist();
-  //     const totalPage = Math.ceil(totalData / limit);
-  //     const pagination = {
-  //       page,
-  //       totalPage,
-  //       limit,
-  //       totalData,
-  //     };
-  //     const offset = page * limit - limit;
-
-  //     const { name } = request.query;
-
-  //     const result = await wishlistModel.getAllWishlist(offset, limit, name);
-
-  //     return wrapper.response(
-  //       response,
-  //       result.status,
-  //       "Success get All Data!",
-  //       result.data,
-  //       pagination
-  //     );
-  //   } catch (error) {
-  //     const { status, statusText, error: errorData } = error;
-  //     return wrapper.response(response, status, statusText, errorData);
-  //   }
-  // },
   getWishlistById: async (request, response) => {
     try {
       const { id } = request.params;
@@ -100,7 +67,6 @@ module.exports = {
   },
   createWishlist: async (request, response) => {
     try {
-      console.log(request.body);
       const { eventId, userId } = request.body;
       const setData = {
         eventId,
@@ -122,8 +88,6 @@ module.exports = {
   },
   updateWishlist: async (request, response) => {
     try {
-      console.log(request.params);
-      console.log(request.bdoy);
       const { id } = request.params;
       const { eventId, userId } = request.body;
 
@@ -158,8 +122,6 @@ module.exports = {
   },
   deleteWishlist: async (request, response) => {
     try {
-      console.log(request.params);
-      console.log(request.bdoy);
       const { id } = request.params;
       const { eventId, userId } = request.body;
 

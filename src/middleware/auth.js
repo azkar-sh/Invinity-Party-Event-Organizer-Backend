@@ -13,7 +13,6 @@ module.exports = {
 
       token = token.split(" ")[1];
       const checkTokenBlacklist = await client.get(`accessToken:${token}`);
-      // console.log(checkTokenBlacklist);
 
       if (checkTokenBlacklist) {
         return wrapper.response(

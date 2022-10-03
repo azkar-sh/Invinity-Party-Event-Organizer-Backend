@@ -163,7 +163,6 @@ module.exports = {
         );
       }
 
-      // console.log(result.data);
       const resultSection = groupingSection(result);
 
       return wrapper.response(

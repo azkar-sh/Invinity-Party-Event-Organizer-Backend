@@ -36,7 +36,7 @@ module.exports = {
         folder: "Event-Organizer/Event",
       },
     });
-    // fileSize: 512000
+    // fileSize: 500kb
     const upload = multer({
       storage,
       limits: { fileSize: 512000 },
@@ -75,7 +75,7 @@ module.exports = {
         folder: "Event-Organizer/User",
       },
     });
-    // fileSize: 512000
+    // fileSize: 512000 bytes or 500 kb
     const upload = multer({
       storage,
       limits: { fileSize: 512000 },

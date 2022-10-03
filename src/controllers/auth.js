@@ -25,9 +25,13 @@ module.exports = {
   },
   register: async (request, response) => {
     try {
-      // console.log(request.body);
       const { username, email, password } = request.body;
       const hashPass = await bcrypt.hash(password, 10);
+
+      if (!username || !email || !password) {
+        return wrapper.response(response, 400, "Please fill all the field!");
+      }
+
       const setData = {
         username,
         email,
@@ -42,7 +46,6 @@ module.exports = {
       const result = await authModel.register(setData);
 
       const responData = { userId: result.data[0].userId };
-      // console.log(responData);
       return wrapper.response(
         response,
         result.status,
@@ -72,12 +75,6 @@ module.exports = {
       if (!validPassword) {
         return wrapper.response(response, 400, "Wrong Password", null);
       }
-
-      // 3. PROSES PEMBUATAN TOKEN JWT
-      // PAYLOAD = DATA YANG MAU DISIMPAN/DIJADIKAN TOKEN
-      // KEY = KATA KUNCI BISA DI GENERATE ATAU DIBUAT LANGSUNG
-      // const payload = checkEmail.data[0];
-      // delete payload.password;
 
       const payload = {
         userId: checkEmail.data[0].userId,
@@ -159,7 +156,7 @@ module.exports = {
           role: result.role,
         };
         token = jwt.sign(payload, process.env.ACCESS_KEYS, {
-          expiresIn: "30s",
+          expiresIn: "1h",
         });
         newRefreshToken = jwt.sign(payload, process.env.REFRESH_KEYS, {
           expiresIn: "36h",

@@ -7,7 +7,6 @@ module.exports = {
   getAllEvent: async (request, response) => {
     try {
       // pagination
-      // console.log(request.query);
       // eslint-disable-next-line prefer-const
       let { page, limit, name, sort, dateTimeShow } = request.query;
       page = +page || 1;
@@ -120,16 +119,23 @@ module.exports = {
     try {
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
-      const { filename, mimetype } = request.file;
-      const setData = {
+
+      let setData = {
         name,
         category,
         location,
         detail,
         dateTimeShow,
         price,
-        image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
+
+      if (request.file) {
+        const { filename, mimetype } = request.file;
+        setData = {
+          ...setData,
+          image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
+        };
+      }
 
       const result = await eventModel.createEvent(setData);
 
@@ -147,7 +153,6 @@ module.exports = {
   updateEvent: async (request, response) => {
     try {
       const { id } = request.params;
-      const { filename, mimetype } = request.file;
       const { name, category, location, detail, dateTimeShow, price } =
         request.body;
 
@@ -163,7 +168,7 @@ module.exports = {
       }
 
       // updateAt
-      const setData = {
+      let setData = {
         name,
         category,
         location,
@@ -171,14 +176,19 @@ module.exports = {
         dateTimeShow,
         price,
         updateAt: "now()",
-        image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
       };
 
-      cloudinary.uploader.destroy(
-        checkId.data[0].image.split(".")[0],
-        (result) => result
-      );
-
+      if (request.file) {
+        const { filename, mimetype } = request.file;
+        setData = {
+          ...setData,
+          image: filename ? `${filename}.${mimetype.split("/")[1]}` : "",
+        };
+        cloudinary.uploader.destroy(
+          checkId.data[0].image.split(".")[0],
+          (result) => result
+        );
+      }
       const result = await eventModel.updateEvent(id, setData);
 
       return wrapper.response(
