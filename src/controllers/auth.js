@@ -25,13 +25,17 @@ module.exports = {
   },
   register: async (request, response) => {
     try {
-      const { username, email, password } = request.body;
-      const hashPass = await bcrypt.hash(password, 10);
+      const { username, email, password, confirmPassword } = request.body;
 
-      if (!username || !email || !password) {
+      if (!username || !email || !password || !confirmPassword) {
         return wrapper.response(response, 400, "Please fill all the field!");
       }
 
+      if (password !== confirmPassword) {
+        return wrapper.response(response, 400, "Password not match!");
+      }
+
+      const hashPass = await bcrypt.hash(password, 10);
       const setData = {
         username,
         email,
