@@ -82,6 +82,7 @@ module.exports = {
 
       const payload = {
         userId: checkEmail.data[0].userId,
+        name: checkEmail.data[0].name,
         role: !checkEmail.data[0].role ? "user" : checkEmail.data[0].role,
       };
 
@@ -91,10 +92,11 @@ module.exports = {
       const refreshToken = jwt.sign(payload, process.env.REFRESH_KEYS, {
         expiresIn: "48h",
       });
-      // 4. PROSES REPON KE USER
+      // 4. PROSES RESPONCE KE USER
       return wrapper.response(response, 200, "Success Login", {
         userId: payload.userId,
         token,
+        name: payload.name,
         refreshToken,
       });
     } catch (error) {
