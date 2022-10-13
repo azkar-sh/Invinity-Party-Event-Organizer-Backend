@@ -114,10 +114,8 @@ module.exports = {
         nationality,
         dateOfBirth,
         email,
-        password,
       } = request.body;
 
-      const hashPass = await bcrypt.hash(password, 10);
       const checkId = await userModel.getUserById(id);
 
       if (checkId.data.length < 1) {
@@ -137,7 +135,6 @@ module.exports = {
         nationality,
         dateOfBirth,
         email,
-        password: hashPass,
         updatedAt: "now()",
       };
 

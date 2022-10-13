@@ -11,6 +11,11 @@ Router.get(
   wishlistController.getAllWishlist
 );
 Router.get(
+  "/user/:userId",
+  authMiddleware.authentication,
+  wishlistController.getWishlistByUserId
+);
+Router.get(
   "/:id",
   authMiddleware.authentication,
   wishlistController.getWishlistById

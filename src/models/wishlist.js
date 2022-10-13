@@ -57,6 +57,20 @@ module.exports = {
           }
         });
     }),
+  getWishlistByUserId: (userId) =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("wishlist")
+        .select("*")
+        .eq("userId", userId)
+        .then((result) => {
+          if (!result.error) {
+            resolve(result);
+          } else {
+            reject(result);
+          }
+        });
+    }),
   createWishlist: (data) =>
     new Promise((resolve, reject) => {
       supabase

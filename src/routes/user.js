@@ -17,12 +17,7 @@ Router.post(
   userController.uploadImage
 );
 Router.patch("/updatePassword/:id", userController.updatePassword);
-Router.patch(
-  "/:id",
-  authMiddleware.authentication,
-  uploadMiddleware.uploadUser,
-  userController.updateUser
-);
+Router.patch("/:id", authMiddleware.authentication, userController.updateUser);
 Router.delete("/:id", authMiddleware.authentication, userController.deleteUser);
 
 module.exports = Router;
