@@ -14,13 +14,11 @@ module.exports = {
           }
         });
     }),
-  getAllWishlist: (offset, limit, userId) =>
+  getAllWishlist: () =>
     new Promise((resolve, reject) => {
       supabase
         .from("wishlist")
-        .select(`*, event(*)`)
-        .range(offset, offset + limit - 1)
-        .eq("userId", userId)
+        .select(`*`)
         .then((result) => {
           if (!result.error) {
             resolve(result);
@@ -29,6 +27,21 @@ module.exports = {
           }
         });
     }),
+  // getAllWishlist: (offset, limit, userId) =>
+  //   new Promise((resolve, reject) => {
+  //     supabase
+  //       .from("wishlist")
+  //       .select(`*, event(*)`)
+  //       .range(offset, offset + limit - 1)
+  //       .eq("userId", userId)
+  //       .then((result) => {
+  //         if (!result.error) {
+  //           resolve(result);
+  //         } else {
+  //           reject(result);
+  //         }
+  //       });
+  //   }),
   // searchWishlist: (name) =>
   //   new Promise((resolve, reject) => {
   //     supabase
@@ -63,6 +76,20 @@ module.exports = {
         .from("wishlist")
         .select("*")
         .eq("userId", userId)
+        .then((result) => {
+          if (!result.error) {
+            resolve(result);
+          } else {
+            reject(result);
+          }
+        });
+    }),
+  getWishlistByEventId: (eventId) =>
+    new Promise((resolve, reject) => {
+      supabase
+        .from("wishlist")
+        .select("*")
+        .eq("eventId", eventId)
         .then((result) => {
           if (!result.error) {
             resolve(result);

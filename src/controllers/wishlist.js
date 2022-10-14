@@ -4,38 +4,53 @@ const wrapper = require("../utils/wrapper");
 module.exports = {
   getAllWishlist: async (request, response) => {
     try {
-      // pagination
-
-      let { page, limit } = request.query;
-      page = +page;
-      limit = +limit;
-      const totalData = await wishlistModel.getCountWishlist();
-      const totalPage = Math.ceil(totalData / limit);
-      const pagination = {
-        page,
-        totalPage,
-        limit,
-        totalData,
-      };
-      const offset = page * limit - limit;
-
-      // search
-      const { userId } = request.query;
-
-      const result = await wishlistModel.getAllWishlist(offset, limit, userId);
+      const result = await wishlistModel.getAllWishlist();
 
       return wrapper.response(
         response,
         result.status,
         "Success get All Data!",
-        result.data,
-        pagination
+        result.data
       );
     } catch (error) {
       const { status, statusText, error: errorData } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },
+  // getAllWishlist: async (request, response) => {
+  //   try {
+  //     // pagination
+
+  //     let { page, limit } = request.query;
+  //     page = +page;
+  //     limit = +limit;
+  //     const totalData = await wishlistModel.getCountWishlist();
+  //     const totalPage = Math.ceil(totalData / limit);
+  //     const pagination = {
+  //       page,
+  //       totalPage,
+  //       limit,
+  //       totalData,
+  //     };
+  //     const offset = page * limit - limit;
+
+  //     // search
+  //     const { userId } = request.query;
+
+  //     const result = await wishlistModel.getAllWishlist(offset, limit, userId);
+
+  //     return wrapper.response(
+  //       response,
+  //       result.status,
+  //       "Success get All Data!",
+  //       result.data,
+  //       pagination
+  //     );
+  //   } catch (error) {
+  //     const { status, statusText, error: errorData } = error;
+  //     return wrapper.response(response, status, statusText, errorData);
+  //   }
+  // },
   getWishlistById: async (request, response) => {
     try {
       const { id } = request.params;
@@ -94,6 +109,35 @@ module.exports = {
       return wrapper.response(response, status, statusText, errorData);
     }
   },
+  getWishlistByEventId: async (request, response) => {
+    try {
+      const { eventId } = request.params;
+      const result = await wishlistModel.getWishlistByEventId(eventId);
+
+      if (result.data.length < 1) {
+        return wrapper.response(
+          response,
+          404,
+          `Data by User Id ${eventId} isn't Found!`,
+          []
+        );
+      }
+
+      return wrapper.response(
+        response,
+        result.status,
+        "Success Get Data by User Id",
+        result.data
+      );
+    } catch (error) {
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
+      return wrapper.response(response, status, statusText, errorData);
+    }
+  },
 
   createWishlist: async (request, response) => {
     try {
@@ -103,8 +147,21 @@ module.exports = {
         userId,
       };
 
-      const result = await wishlistModel.createWishlist(setData);
+      const checkByEventId = await wishlistModel.getWishlistByEventId(eventId);
+      if (checkByEventId.data.length > 0) {
+        const id = checkByEventId.data[0].wishlistId;
+        const result = await wishlistModel.deleteWishlist(id);
+        return wrapper.response(
+          response,
+          result.status,
+          "Success Delete Wishlist",
+          result.data
+        );
+        // console.log(id);
+        // console.log(result);
+      }
 
+      const result = await wishlistModel.createWishlist(setData);
       return wrapper.response(
         response,
         result.status,
