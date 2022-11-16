@@ -11,7 +11,7 @@ Router.get("/greetings", userController.showGreetings);
 Router.get("/", userController.getAllUser);
 Router.get("/:id", authMiddleware.authentication, userController.getUserById);
 Router.post("/", userController.createUser);
-Router.post(
+Router.patch(
   "/uploadImage/:id",
   uploadMiddleware.uploadUser,
   userController.uploadImage

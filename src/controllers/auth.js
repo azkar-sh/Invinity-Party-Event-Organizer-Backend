@@ -25,13 +25,13 @@ module.exports = {
   },
   register: async (request, response) => {
     try {
-      const { username, email, password, confirmPassword } = request.body;
+      const { username, email, password, confirmpassword } = request.body;
 
-      if (!username || !email || !password || !confirmPassword) {
-        return wrapper.response(response, 400, "Please fill all the field!");
-      }
+      // if (!username || !email || !password || !confirmpassword) {
+      //   return wrapper.response(response, 400, "Please fill all the field!");
+      // }
 
-      if (password !== confirmPassword) {
+      if (password !== confirmpassword) {
         return wrapper.response(response, 400, "Password not match!");
       }
 
@@ -57,7 +57,11 @@ module.exports = {
         responData
       );
     } catch (error) {
-      const { status, statusText, error: errorData } = error;
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },

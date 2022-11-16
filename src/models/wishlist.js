@@ -74,7 +74,7 @@ module.exports = {
     new Promise((resolve, reject) => {
       supabase
         .from("wishlist")
-        .select("*")
+        .select(`*, event(name, price, detail, location, dateTimeShow)`)
         .eq("userId", userId)
         .then((result) => {
           if (!result.error) {

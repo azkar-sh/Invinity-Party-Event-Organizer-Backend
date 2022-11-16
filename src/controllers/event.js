@@ -73,7 +73,11 @@ module.exports = {
         pagination
       );
     } catch (error) {
-      const { status, statusText, error: errorData } = error;
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },
@@ -146,7 +150,11 @@ module.exports = {
         result.data
       );
     } catch (error) {
-      const { status, statusText, error: errorData } = error;
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },
@@ -198,7 +206,11 @@ module.exports = {
         result.data
       );
     } catch (error) {
-      const { status, statusText, error: errorData } = error;
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },
@@ -230,7 +242,11 @@ module.exports = {
         result.data
       );
     } catch (error) {
-      const { status, statusText, error: errorData } = error;
+      const {
+        status = 500,
+        statusText = "Internal Server Error",
+        error: errorData = null,
+      } = error;
       return wrapper.response(response, status, statusText, errorData);
     }
   },
