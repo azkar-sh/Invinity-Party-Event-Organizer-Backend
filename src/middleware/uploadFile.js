@@ -75,10 +75,10 @@ module.exports = {
         folder: "Event-Organizer/User",
       },
     });
-    // fileSize: 512000 bytes or 500 kb
+    // fileSize: 5120000 bytes or 5000 kb
     const upload = multer({
       storage,
-      limits: { fileSize: 512000 },
+      limits: { fileSize: 5120000 },
       // eslint-disable-next-line object-shorthand, consistent-return, func-names
       fileFilter: function (req, file, callback) {
         if (
