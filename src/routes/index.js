@@ -9,7 +9,6 @@ const wishlistRoutes = require("./wishlist");
 const bookingRoutes = require("./booking");
 const bookingSectionRoutes = require("./bookingSection");
 const authRoutes = require("./auth");
-const paymentRoutes = require("./payment");
 
 // Router.get("/greetings", (request, response) => {
 //   response.status(200).send("Hello World!");
@@ -22,6 +21,5 @@ Router.use("/wishlist", wishlistRoutes);
 Router.use("/booking", bookingRoutes);
 Router.use("/bookingSection", bookingSectionRoutes);
 Router.use("/auth", authRoutes);
-Router.use("/payment", paymentRoutes);
 
 module.exports = Router;
