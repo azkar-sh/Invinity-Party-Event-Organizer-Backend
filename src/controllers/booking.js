@@ -1,6 +1,7 @@
 const bookingModel = require("../models/booking");
 const wrapper = require("../utils/wrapper");
 const groupingSection = require("../utils/groupingSection");
+const snapMidtrans = require("../utils/snapMidtrans");
 
 module.exports = {
   getAllBooking: async (request, response) => {
@@ -32,12 +33,20 @@ module.exports = {
 
       const result = await bookingModel.createBooking(setData);
 
-      return wrapper.response(
-        response,
-        result.status,
-        "Success Create Data!",
-        result.data
-      );
+      const { bookingId } = result.data[0];
+
+      const parameterBooking = {
+        bookingId,
+        totalPayment,
+      };
+      const redirectUrl = await snapMidtrans.post(parameterBooking);
+
+      console.log(result);
+
+      return wrapper.response(response, result.status, "Success Create Data!", {
+        redirectUrl,
+        totalPayment,
+      });
     } catch (error) {
       const { status, statusText, error: errorData } = error;
       return wrapper.response(response, status, statusText, errorData);
