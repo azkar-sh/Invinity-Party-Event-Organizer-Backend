@@ -8,7 +8,8 @@ module.exports = {
     try {
       // pagination
       // eslint-disable-next-line prefer-const
-      let { page, limit, name, sort, dateTimeShow } = request.query;
+      let { page, limit, name, sortColumn, sortType, dateTimeShow } =
+        request.query;
       page = +page || 1;
       limit = +limit || 10;
       name = `${name}`;
@@ -24,14 +25,14 @@ module.exports = {
       const offset = page * limit - limit;
 
       // dynamic sorting and searching
-      let sortColumn = "createdAt";
-      let sortType = "asc";
-      if (sort) {
-        // eslint-disable-next-line prefer-destructuring
-        sortColumn = sort.split("-")[0];
-        // eslint-disable-next-line prefer-destructuring
-        sortType = sort.split("-")[1];
-      }
+      sortColumn = sortColumn || "createdAt";
+      sortType = sortType || "asc";
+      // if (sort) {
+      //   // eslint-disable-next-line prefer-destructuring
+      //   sortColumn = sort.split("-")[0];
+      //   // eslint-disable-next-line prefer-destructuring
+      //   sortType = sort.split("-")[1];
+      // }
       if (sortType.toLowerCase() === "asc") {
         sortType = true;
       } else {
