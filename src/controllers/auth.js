@@ -69,6 +69,12 @@ module.exports = {
     try {
       const { email, password } = request.body;
 
+      const validateEmail = () =>
+        email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+      if (!validateEmail(email)) {
+        return wrapper.response(response, 400, "Email is not valid", null);
+      }
+
       // 1. PROSES PENGECEKAN EMAIL
       const checkEmail = await authModel.getUserByEmail(email);
       if (checkEmail.data.length < 1) {
