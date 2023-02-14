@@ -9,6 +9,7 @@ const redisMiddleware = require("../middleware/redis");
 
 Router.get(
   "/",
+  authMiddleware.authentication,
   redisMiddleware.getAllEvent,
   redisMiddleware.clearEvent,
   eventController.getAllEvent
